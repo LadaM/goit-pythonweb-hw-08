@@ -46,3 +46,6 @@ goit-pythonweb-hw-08/
     ```
    DATABASE_URL=postgresql://username:password@localhost:5432/contacts_db
     ```
+5. To ensure that the database is set up correctly, the table `contacts` should be created. This project uses Alembic to manage database schema migrations. You must apply migrations to create the required tables, including the contacts table.
+To apply migrations, run the following command:
+   `alembic upgrade head`
