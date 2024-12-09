@@ -7,7 +7,6 @@ Fullstack Web Development with Python course
 ```
 goit-pythonweb-hw-08/
 ├── app/
-│   ├── __init__.py            
 │   ├── db/
 │   │   ├── __init__.py         
 │   │   ├── database.py         # Database engine and session setup
@@ -20,14 +19,16 @@ goit-pythonweb-hw-08/
 │   │   │   ├── __init__.py     
 │   │   │   └── contacts.py     # Contacts-related endpoints
 │   │   └── schemas.py          # Pydantic schemas for validation
-├── alembic/                    # Alembic migrations directory
+├── alembic/                    
 │   ├── env.py                  # Alembic configuration file
 │   ├── versions/               # Database migration versions
-├── tests/                      # Unit and integration tests
+├── tests/                      
 │   ├── __init__.py
-│   └── test_contacts.py        # Tests for the contacts API
+│   ├── test_db_connection.py   # Test database connection         
+│   └── test_contacts.py        # Test CRUD operations for contacts
 ├── .env                        # Environment variables (e.g., DB connection string)
-├── .gitignore                  # Ignore unnecessary files in Git
+├── alembic.ini                 # Alembic configuration file
+├── config.py                   # Project configuration (loading environment variables)
 ├── pyproject.toml              # Poetry dependencies and settings
 └── README.md                   # Project documentation
 ```
