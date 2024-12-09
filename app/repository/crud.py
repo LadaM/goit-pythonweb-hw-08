@@ -1,3 +1,5 @@
+from datetime import date
+
 from sqlalchemy.orm import Session
 
 from app.api.schemas import ContactCreate
@@ -44,3 +46,19 @@ def search_contacts(db: Session, name: str = None, last_name: str = None, email:
     if email:
         query = query.filter(Contact.email.ilike(f"%{email}%"))
     return query.all()
+
+
+def get_upcoming_birthdays(db: Session, start_date: date, end_date: date):
+    upcoming_birthdays = []
+
+    contacts = db.query(Contact).all()
+    for contact in contacts:
+        this_year_birthday = date(start_date.year, contact.birthday.month, contact.birthday.day)
+
+        if this_year_birthday < start_date:
+            this_year_birthday = date(start_date.year + 1, contact.birthday.month, contact.birthday.day)
+
+        if start_date <= this_year_birthday <= end_date:
+            upcoming_birthdays.append(contact)
+
+    return upcoming_birthdays

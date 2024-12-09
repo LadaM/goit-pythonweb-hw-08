@@ -1,11 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
+import datetime
 
 from app.api.schemas import ContactCreate, ContactResponse
 from app.repository import crud
 from app.repository.database import get_db
 
 router = APIRouter()
+DEFAULT_PERIOD = 7 # days
 
 @router.post("/", response_model=ContactResponse)
 def create_contact(contact: ContactCreate, db: Session = Depends(get_db)):
@@ -46,5 +48,15 @@ def search_contacts(
 ):
     contacts = crud.search_contacts(db, name, last_name, email)
     if not contacts:
-        raise HTTPException(status_code=404, detail="Контакти не знайдено")
+        raise HTTPException(status_code=404, detail="Contact not found")
+    return contacts
+
+
+@router.get("/birthdays/", response_model=list[ContactResponse])
+def get_upcoming_birthdays(days: int = DEFAULT_PERIOD, db: Session = Depends(get_db)):
+    if days < 1:
+        raise HTTPException(status_code=400, detail="Period must be non-negative")
+    if days > 365:
+        raise HTTPException(status_code=400, detail="Period must be less than a year")
+    contacts = crud.get_upcoming_birthdays(db, datetime.date.today(), datetime.date.today() + datetime.timedelta(days=days))
     return contacts
