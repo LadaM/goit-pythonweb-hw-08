@@ -2,8 +2,8 @@ from logging.config import fileConfig
 
 from alembic import context
 
-from app.db import models  # noqa
-from app.db.database import Base, engine
+from app.repository import models  # noqa
+from app.repository.database import Base, engine
 
 fileConfig(context.config.config_file_name)
 

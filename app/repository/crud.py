@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from app.db.models import Contact
+from app.repository.models import Contact
 from app.api.schemas import ContactCreate
 
 def create_contact(db: Session, contact: ContactCreate):

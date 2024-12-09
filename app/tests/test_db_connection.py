@@ -1,5 +1,5 @@
 from sqlalchemy import inspect
-from app.db.database import engine
+from app.repository.database import engine
 
 def test_connection():
     try:
