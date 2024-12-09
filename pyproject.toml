@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "goit-pythonweb-hw-08"
+version = "0.1.0"
+description = "A contacts management API using FastAPI"
+authors = ["Lada Murchych <lada11lada@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.13"
+fastapi = "^0.115.6"
+uvicorn = "^0.32.1"
+sqlalchemy = "^2.0.36"
+psycopg2-binary = "^2.9.10"
+pydantic = "^2.10.3"
+python-dotenv = "^1.0.1"
+alembic = "^1.14.0"
+pydantic-settings = "^2.6.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.0"
+pytest-asyncio = "^0.21.0"
+mypy = "^1.0.0"
+flake8 = "^6.0.0"
+black = "^23.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
