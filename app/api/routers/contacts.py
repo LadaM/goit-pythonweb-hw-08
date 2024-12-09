@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
-from app.repository.database import get_db
+
 from app.api.schemas import ContactCreate, ContactResponse
 from app.repository import crud
+from app.repository.database import get_db
 
 router = APIRouter()
 
@@ -34,3 +35,16 @@ def delete_contact(contact_id: int, db: Session = Depends(get_db)):
     if not deleted:
         raise HTTPException(status_code=404, detail="Contact not found")
     return {"detail": "Contact deleted"}
+
+
+@router.get("/search/", response_model=list[ContactResponse])
+def search_contacts(
+        name: str = Query(None),
+        last_name: str = Query(None),
+        email: str = Query(None),
+        db: Session = Depends(get_db)
+):
+    contacts = crud.search_contacts(db, name, last_name, email)
+    if not contacts:
+        raise HTTPException(status_code=404, detail="Контакти не знайдено")
+    return contacts

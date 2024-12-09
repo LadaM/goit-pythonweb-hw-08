@@ -1,6 +1,8 @@
 from sqlalchemy.orm import Session
-from app.repository.models import Contact
+
 from app.api.schemas import ContactCreate
+from app.repository.models import Contact
+
 
 def create_contact(db: Session, contact: ContactCreate):
     new_contact = Contact(**contact.model_dump())
@@ -31,3 +33,14 @@ def delete_contact(db: Session, contact_id: int):
         db.delete(contact)
         db.commit()
     return contact
+
+
+def search_contacts(db: Session, name: str = None, last_name: str = None, email: str = None):
+    query = db.query(Contact)
+    if name:
+        query = query.filter(Contact.first_name.ilike(f"%{name}%"))
+    if last_name:
+        query = query.filter(Contact.last_name.ilike(f"%{last_name}%"))
+    if email:
+        query = query.filter(Contact.email.ilike(f"%{email}%"))
+    return query.all()
