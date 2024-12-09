@@ -3,7 +3,7 @@ from app.repository.models import Contact
 from app.api.schemas import ContactCreate
 
 def create_contact(db: Session, contact: ContactCreate):
-    new_contact = Contact(**contact.dict())
+    new_contact = Contact(**contact.model_dump())
     db.add(new_contact)
     db.commit()
     db.refresh(new_contact)

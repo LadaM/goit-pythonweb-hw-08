@@ -50,3 +50,11 @@ goit-pythonweb-hw-08/
 5. To ensure that the database is set up correctly, the table `contacts` should be created. This project uses Alembic to manage database schema migrations. You must apply migrations to create the required tables, including the contacts table.
 To apply migrations, run the following command:
    `alembic upgrade head`
+
+## Running the Application
+To run the application, run the following command:
+   `poetry run uvicorn app.api.main:app --reload --host 0.0.0.0 --port 8000`
+
+## API Documentation
+The documentation of the API is available at http://localhost:8000/docs
+![img.png](img.png)
