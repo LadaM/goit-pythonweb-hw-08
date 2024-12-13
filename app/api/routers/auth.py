@@ -1,10 +1,14 @@
+from datetime import timedelta
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 from app.api.schemas import UserCreate, UserResponse, Token
+from app.config import Config
 from app.repository import crud
 from app.repository.database import get_db
+from app.utils.jwt import create_access_token
 
 router = APIRouter()
 
@@ -23,5 +27,8 @@ def login_user(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = D
     if not user or not crud.verify_password(form_data.password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    token = "stub_token"  # TODO: real JWT token
-    return {"access_token": token, "token_type": "bearer"}
+    access_token = create_access_token(
+        data={"sub": user.email},
+        expires_delta=timedelta(minutes=Config.ACCESS_TOKEN_EXPIRE_MINUTES),
+    )
+    return {"access_token": access_token, "token_type": "bearer"}

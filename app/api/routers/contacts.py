@@ -1,16 +1,20 @@
+import datetime
+
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
-import datetime
 
 from app.api.schemas import ContactCreate, ContactResponse
 from app.repository import crud
 from app.repository.database import get_db
+from app.services.user_service import get_current_user
 
-router = APIRouter()
+# only logged-in users can access contacts
+router = APIRouter(dependencies=[Depends(get_current_user)])
 DEFAULT_PERIOD = 7 # days
 
 @router.post("/", response_model=ContactResponse)
-def create_contact(contact: ContactCreate, db: Session = Depends(get_db)):
+def create_contact(contact: ContactCreate,
+                   db: Session = Depends(get_db)):
     return crud.create_contact(db, contact)
 
 @router.get("/", response_model=list[ContactResponse])
