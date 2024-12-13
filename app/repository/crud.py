@@ -1,9 +1,10 @@
 from datetime import date
 
+from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
 from app.api.schemas import ContactCreate
-from app.repository.models import Contact
+from app.repository.models import Contact, User
 
 
 def create_contact(db: Session, contact: ContactCreate):
@@ -62,3 +63,23 @@ def get_upcoming_birthdays(db: Session, start_date: date, end_date: date):
             upcoming_birthdays.append(contact)
 
     return upcoming_birthdays
+
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+
+def get_user_by_email(db: Session, email: str):
+    return db.query(User).filter(User.email == email).first()
+
+
+def create_user(db: Session, email: str, password: str):
+    hashed_password = pwd_context.hash(password)
+    user = User(email=email, hashed_password=hashed_password)
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return user
+
+
+def verify_password(plain_password: str, hashed_password: str):
+    return pwd_context.verify(plain_password, hashed_password)

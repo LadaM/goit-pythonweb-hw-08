@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "goit-pythonweb-hw-08"
+name = "goit-pythonweb-hw-10"
 version = "0.1.0"
 description = "A contacts management API using FastAPI"
 authors = ["Lada Murchych <lada11lada@gmail.com>"]
@@ -17,6 +17,8 @@ alembic = "^1.14.0"
 pydantic-settings = "^2.6.1"
 email-validator = "^2.2.0"
 faker = "^33.1.0"
+passlib = "^1.7.4"
+bcrypt = "^4.2.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.0"
