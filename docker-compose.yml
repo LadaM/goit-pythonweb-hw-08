@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: fastapi-app
+    container_name: contacts-api-container
     env_file:
       - .env
     ports:

@@ -6,29 +6,30 @@ Fullstack Web Development with Python course
 ## Project Structure
 ```
 goit-pythonweb-hw-08/
+├── alembic/                    
+│   ├── env.py                  # Alembic configuration file
+│   ├── versions/               # Database migration versions
 ├── app/
-│   ├── db/
+│   ├── repository/
 │   │   ├── __init__.py         
 │   │   ├── database.py         # Database engine and session setup
 │   │   ├── models.py           # SQLAlchemy models
-│   │   └── crud.py             # CRUD operations for the database
+│   │   └── seed_contacts.py    # run for adding a few contacts to the database
 │   ├── api/
 │   │   ├── __init__.py         
-│   │   ├── main.py             # FastAPI application instance
 │   │   ├── routers/
 │   │   │   ├── __init__.py     
 │   │   │   └── contacts.py     # Contacts-related endpoints
 │   │   └── schemas.py          # Pydantic schemas for validation
-├── alembic/                    
-│   ├── env.py                  # Alembic configuration file
-│   ├── versions/               # Database migration versions
-├── tests/                      
-│   ├── __init__.py
-│   ├── test_db_connection.py   # Test database connection         
-│   └── test_contacts.py        # Test CRUD operations for contacts
+|   ├── tests/                      
+│   │   ├── __init__.py
+│   │   └── test_db_connection.py   # Test database connection         
+│   ├── config.py                   # Project configuration (loading environment variables)
+│   └── main.py             # FastAPI application instance
 ├── .env                        # Environment variables (e.g., DB connection string)
 ├── alembic.ini                 # Alembic configuration file
-├── config.py                   # Project configuration (loading environment variables)
+├── docker-compose.yml          
+├── dockerfile             
 ├── pyproject.toml              # Poetry dependencies and settings
 └── README.md                   # Project documentation
 ```
@@ -58,3 +59,10 @@ To run the application, run the following command:
 ## API Documentation
 The documentation of the API is available at http://localhost:8000/docs
 ![img.png](img.png)
+
+## Running the Application in Docker
+Run the following command to build the Docker images:
+`docker-compose build`
+
+To run the application in Docker, use the following command:
+`docker-compose up`
