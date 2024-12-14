@@ -9,7 +9,7 @@ from app.services.authentication import get_current_user
 from app.services.user_service import UserService
 from app.utils.jwt import verify_email_verification_token
 
-router = APIRouter()
+router = APIRouter(prefix="/auth", tags=["Authentication"])
 limiter = Limiter(key_func=get_remote_address)
 
 

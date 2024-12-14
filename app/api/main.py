@@ -1,17 +1,30 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
 from app.api.routers import contacts, auth
 
 app = FastAPI()
+
+# for now allow all origins
+allowed_origins = ["*"]
 
 # Healthcheck
 @app.get("/")
 async def root():
     return {"message": "Welcome to FastAPI!"}
 
-# Include a router to authentication
-app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
-# Include a router to contacts
-app.include_router(contacts.router, prefix="/contacts", tags=["Contacts"])
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=allowed_origins,
+    allow_credentials=True,
+    allow_methods=["*"],  # all methods allowed
+    allow_headers=["*"],  # all HTTP headers allowed
+)
+
+# Include routers
+app.include_router(auth.router)
+app.include_router(contacts.router)
 
 if __name__ == "__main__":
     import uvicorn

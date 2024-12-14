@@ -9,7 +9,7 @@ from app.services.contact_service import ContactService
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 DEFAULT_PERIOD = 7  # days
 
-router = APIRouter(
+router = APIRouter(prefix="/contacts", tags=["Contacts"],
     dependencies=[Depends(oauth2_scheme)]  # Enforce security globally for all endpoints
 )
 
