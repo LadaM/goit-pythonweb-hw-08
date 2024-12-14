@@ -1,63 +1,56 @@
 import datetime
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy.orm import Session
+from fastapi.security import OAuth2PasswordBearer
 
 from app.api.schemas import ContactCreate, ContactResponse
-from app.repository import contacts
-from app.repository.database import get_db
-from app.services.user_service import get_current_user
-from app.repository.models import User
+from app.services.contact_service import ContactService
 
-# only logged-in users can access contacts
-router = APIRouter(dependencies=[Depends(get_current_user)])
-DEFAULT_PERIOD = 7 # days
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+DEFAULT_PERIOD = 7  # days
+
+router = APIRouter(
+    dependencies=[Depends(oauth2_scheme)]  # Enforce security globally for all endpoints
+)
 
 @router.get("/", response_model=list[ContactResponse])
 def read_contacts(
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+        contact_service: ContactService = Depends()
 ):
-    return contacts.get_all_contacts(db, current_user)
+    return contact_service.get_all_contacts()
+
 
 @router.get("/{contact_id}", response_model=ContactResponse)
 def read_contact(
     contact_id: int,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+        contact_service: ContactService = Depends()
 ):
-    contact = contacts.get_contact_by_id(db, contact_id, current_user)
+    contact = contact_service.get_contact_by_id(contact_id)
     if not contact:
         raise HTTPException(status_code=404, detail="Contact not found")
     return contact
 
+
 @router.post("/", response_model=ContactResponse)
-def create_contact(
-    contact: ContactCreate,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+def create_contact(contact: ContactCreate,
+                   contact_service: ContactService = Depends()
 ):
-    return contacts.create_contact(db, contact, current_user)
+    return contact_service.create_contact(contact)
+
 
 @router.put("/{contact_id}", response_model=ContactResponse)
-def update_contact(
-    contact_id: int,
-    contact: ContactCreate,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+def update_contact(contact_id: int, contact: ContactCreate,
+                   contact_service: ContactService = Depends()
 ):
-    updated_contact = contacts.update_contact(db, contact_id, contact, current_user)
+    updated_contact = contact_service.update_contact(contact_id, contact)
     if not updated_contact:
         raise HTTPException(status_code=404, detail="Contact not found")
     return updated_contact
 
+
 @router.delete("/{contact_id}")
-def delete_contact(
-    contact_id: int,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
-    deleted = contacts.delete_contact(db, contact_id, current_user)
+def delete_contact(contact_id: int, contact_service: ContactService = Depends()):
+    deleted = contact_service.delete_contact(contact_id)
     if not deleted:
         raise HTTPException(status_code=404, detail="Contact not found")
     return {"detail": "Contact deleted"}
@@ -68,19 +61,24 @@ def search_contacts(
         name: str = Query(None),
         last_name: str = Query(None),
         email: str = Query(None),
-        db: Session = Depends(get_db)
+        contact_service: ContactService = Depends()
 ):
-    contacts = contacts.search_contacts(db, name, last_name, email)
+    contacts = contact_service.search_contacts(name, last_name, email)
     if not contacts:
-        raise HTTPException(status_code=404, detail="Contact not found")
+        raise HTTPException(status_code=404, detail="Contacts not found")
     return contacts
 
 
 @router.get("/birthdays/", response_model=list[ContactResponse])
-def get_upcoming_birthdays(days: int = DEFAULT_PERIOD, db: Session = Depends(get_db)):
+def get_upcoming_birthdays(
+        days: int = DEFAULT_PERIOD,
+        contact_service: ContactService = Depends()
+):
     if days < 1:
         raise HTTPException(status_code=400, detail="Period must be non-negative")
     if days > 365:
         raise HTTPException(status_code=400, detail="Period must be less than a year")
-    contacts = crud.get_upcoming_birthdays(db, datetime.date.today(), datetime.date.today() + datetime.timedelta(days=days))
+    contacts = contact_service.get_upcoming_birthdays(
+        datetime.date.today(), datetime.date.today() + datetime.timedelta(days=days)
+    )
     return contacts
