@@ -1,11 +1,16 @@
-from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Request
 from fastapi.security import OAuth2PasswordRequestForm
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 from app.api.schemas import UserCreate, UserResponse, Token
+from app.repository.models import User
+from app.services.authentication import get_current_user
 from app.services.user_service import UserService
 from app.utils.jwt import verify_email_verification_token
 
 router = APIRouter()
+limiter = Limiter(key_func=get_remote_address)
 
 
 @router.post("/register", response_model=UserResponse, status_code=201)
@@ -24,6 +29,14 @@ async def register_user(
     )
     return UserResponse(id=new_user.id, is_active=new_user.is_active, email=new_user.email,
                         is_verified=new_user.is_verified)
+
+
+@router.get(
+    "/me", response_model=UserResponse, description="No more than 10 requests per minute"
+)
+@limiter.limit("10/minute")
+async def get_current_user(request: Request, user: User = Depends(get_current_user)):
+    return user
 
 
 @router.post("/login", response_model=Token, status_code=201)
@@ -60,7 +73,8 @@ def verify_email(
     user_service.verify_user_email(user)
     return {"message": "Email verified successfully"}
 
-@router.post("/send-verification-email", status_code=200)
+
+@router.post("/send-verification-email", status_code=201)
 async def resend_verification_email(
         email: str,
         background_tasks: BackgroundTasks,
