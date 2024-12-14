@@ -10,6 +10,7 @@ class User(Base):
     hashed_password = Column(String, nullable=False)
     is_active = Column(Boolean, default=True)
     is_verified = Column(Boolean, default=False)
+    verification_token = Column(String, nullable=True)
 
     contacts = relationship("Contact", back_populates="owner")
 
