@@ -1,6 +1,6 @@
-# goit-pythonweb-hw-10
+# goit-pythonweb-hw-12
 
-Тема 10. Домашня робота
+Тема 12. Домашня робота
 Fullstack Web Development with Python course
 
 ## Project Structure
