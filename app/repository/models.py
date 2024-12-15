@@ -1,6 +1,14 @@
-from sqlalchemy import Column, Integer, String, Boolean, Date, ForeignKey
+from enum import Enum as PyEnum
+
+from sqlalchemy import Column, Integer, String, Boolean, Date, ForeignKey, Enum
 from sqlalchemy.orm import relationship
+
 from app.repository.database import Base
+
+
+class UserRole(PyEnum):
+    USER = "user"
+    ADMIN = "admin"
 
 class User(Base):
     __tablename__ = "users"
@@ -8,6 +16,8 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
+    role = Column(Enum(UserRole), default=UserRole.USER, nullable=False)
+    avatar = Column(String, nullable=True)  # Path to avatar image
     is_active = Column(Boolean, default=True)
     is_verified = Column(Boolean, default=False)
     verification_token = Column(String, nullable=True)

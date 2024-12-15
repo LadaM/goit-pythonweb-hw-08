@@ -1,3 +1,5 @@
+import os
+import shutil
 from datetime import timedelta
 
 from fastapi import BackgroundTasks, Depends
@@ -68,3 +70,19 @@ class UserService:
         user.is_verified = True
         user.verification_token = None
         self.db.commit()
+
+    def update_avatar(self, user: User, avatar_file, avatar_filename: str) -> User:
+        if avatar_file.content_type not in ["image/jpeg", "image/png"]:
+            raise ValueError("Invalid file type. Only JPEG and PNG allowed.")
+
+        avatar_path = f"avatars/{user.id}_{avatar_filename}"
+        os.makedirs("avatars", exist_ok=True)
+
+        with open(avatar_path, "wb") as buffer:
+            shutil.copyfileobj(avatar_file.file, buffer)
+
+        user.avatar = avatar_path
+        self.db.add(user)
+        self.db.commit()
+        self.db.refresh(user)
+        return user

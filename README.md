@@ -56,13 +56,47 @@ To apply migrations, run the following command:
 To run the application, run the following command:
    `poetry run uvicorn app.api.main:app --reload --host 0.0.0.0 --port 8000`
 
-## API Documentation
-The documentation of the API is available at http://localhost:8000/docs
-![img.png](img.png)
-
 ## Running the Application in Docker
 Run the following command to build the Docker images:
 `docker-compose build`
 
 To run the application in Docker, use the following command:
 `docker-compose up`
+
+## API Endpoints
+
+### Documentation
+
+The documentation of the API is available at http://localhost:8000/docs
+
+### Contacts
+
+Only logged-in users can access the contacts endpoints.
+
+| Method | Endpoint                   | Description                |
+|--------|----------------------------|----------------------------|
+| GET    | /api/contacts              | Get all contacts           |
+| GET    | /api/contacts/{contact_id} | Get a specific contact     |
+| POST   | /api/contacts              | Create a new contact       |
+| PUT    | /api/contacts/{contact_id} | Update an existing contact |
+| DELETE | /api/contacts/{contact_id} | Delete a contact           | 
+
+### Authentication
+
+To authenticate and obtain an access token, use the following endpoint:
+
+| Method | Endpoint       | Description                      | 
+|--------|----------------|----------------------------------|
+| POST	  | /auth/login	   | Login and obtain an access token | 
+| POST	  | /auth/register | 	Register a new user             | 
+
+### Users
+
+Endpoints for managing user accounts. Only authenticated users can access these.
+
+| Method | 	Endpoint     | 	Description                                  |
+|--------|---------------|-----------------------------------------------|
+| GET	   | /user/me	     | Get details of the current user               |
+| PUT	   | /user/avatar	 | Update the current user's avatar (admin only) |
+
+![img_1.png](user_role_update_avatar_response.png)
