@@ -1,3 +1,8 @@
+"""
+Main module for the FastAPI application.
+
+Includes routers for authentication, contacts, and user management.
+"""
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 

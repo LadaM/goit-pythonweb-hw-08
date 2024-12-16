@@ -1,3 +1,8 @@
+"""
+Contact Service.
+
+This module contains the `ContactService` class, which provides functionality for managing user contacts.
+"""
 from datetime import date
 
 from fastapi import Depends
@@ -11,11 +16,24 @@ from app.services.authentication import get_current_user
 
 
 class ContactService:
+    """
+    A service class for managing contacts.
+
+    Attributes:
+        db (Session): Database session for queries.
+        user (User): Currently authenticated user.
+    """
     def __init__(self, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
         self.db = db
         self.user = user
 
     def get_all_contacts(self):
+        """
+        Retrieve all contacts for the current user.
+
+        Returns:
+            List[Contact]: List of all contacts.
+        """
         return self._get_contacts_for_user()
 
     def get_contact_by_id(self, contact_id: int):

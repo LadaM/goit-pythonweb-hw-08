@@ -1,11 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Request
+"""
+Authentication Routers
+"""
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from fastapi.security import OAuth2PasswordRequestForm
-from slowapi import Limiter
-
 
 from app.api.schemas import UserCreate, UserResponse, Token
-from app.repository.models import User
-from app.services.authentication import get_current_user
 from app.services.user_service import UserService
 from app.utils.jwt import verify_email_verification_token
 

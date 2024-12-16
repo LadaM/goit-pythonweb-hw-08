@@ -1,3 +1,8 @@
+"""
+User Service.
+
+This module contains the `UserService` class, which provides functionality for user management.
+"""
 import os
 import shutil
 from datetime import timedelta
@@ -8,16 +13,22 @@ from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
 from app.config import Config
+from app.repository.database import get_db
 from app.repository.models import User
 from app.utils.jwt import create_access_token, create_email_verification_token
 from app.utils.mail import send_verification_email
-from app.repository.database import get_db
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 
 class UserService:
+    """
+    A service class for managing users.
+
+    Attributes:
+        db (Session): Database session for queries.
+    """
     def __init__(self, db: Session = Depends(get_db)):
         self.db = db
 

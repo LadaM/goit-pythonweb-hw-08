@@ -1,3 +1,6 @@
+"""
+Contact and User Schemas.
+"""
 from datetime import date
 from typing import Optional
 

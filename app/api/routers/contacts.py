@@ -1,3 +1,8 @@
+"""
+Contact Routers
+
+This module contains routes for managing user contacts.
+"""
 import datetime
 
 from fastapi import APIRouter, Depends, HTTPException, Query
@@ -17,6 +22,7 @@ router = APIRouter(prefix="/contacts", tags=["Contacts"],
 def read_contacts(
         contact_service: ContactService = Depends()
 ):
+    """Retrieve all contacts for the current user."""
     return contact_service.get_all_contacts()
 
 

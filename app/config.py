@@ -26,6 +26,7 @@ class Config:
 
     @staticmethod
     def validate():
+        """Ensure that all required environment variables are set."""
         # Validate database config
         if not Config.DATABASE_URL:
             raise ValueError("DATABASE_URL is not set in the environment variables")

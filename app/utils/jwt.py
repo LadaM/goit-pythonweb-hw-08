@@ -1,3 +1,6 @@
+"""
+JWT Utilities.
+"""
 from datetime import datetime, timedelta
 from typing import Union
 
@@ -31,6 +34,10 @@ def create_email_verification_token(email: str):
 
 
 def verify_email_verification_token(token: str):
+    """
+    Decode and verify an email verification token.
+    Raise an exception if the token is invalid.
+    """
     email = verify_access_token(token)
     if not email:
         raise HTTPException(status_code=400, detail="Invalid or expired token")

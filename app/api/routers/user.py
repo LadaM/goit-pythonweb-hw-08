@@ -1,3 +1,6 @@
+"""
+User Routers
+"""
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Request
 from slowapi import Limiter
 from slowapi.util import get_remote_address
@@ -16,6 +19,7 @@ limiter = Limiter(key_func=get_remote_address)
 )
 @limiter.limit("10/minute")
 async def get_current_user(request: Request, user: User = Depends(get_current_user)):
+    """Retrieve the current user."""
     return user
 
 
@@ -25,6 +29,7 @@ def update_avatar(
         current_user: User = Depends(get_current_admin_user),
         user_service: UserService = Depends()
 ):
+    """Update the avatar of the current user."""
     try:
         updated_user = user_service.update_avatar(current_user, avatar, avatar.filename)
         return updated_user
