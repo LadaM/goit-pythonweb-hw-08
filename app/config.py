@@ -24,6 +24,12 @@ class Config:
     MAIL_PORT = os.getenv("MAIL_PORT")
     MAIL_SERVER = os.getenv("MAIL_SERVER")
 
+    # Redis
+    REDIS_HOST = "redis-container"
+    REDIS_PORT = 6379
+    REDIS_DB = 0
+    REDIS_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}"
+
     @staticmethod
     def validate():
         """Ensure that all required environment variables are set."""
