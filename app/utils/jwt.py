@@ -42,3 +42,13 @@ def verify_email_verification_token(token: str):
     if not email:
         raise HTTPException(status_code=400, detail="Invalid or expired token")
     return email
+
+def create_password_reset_token(email: str):
+    data = {"sub": email}
+    return create_access_token(data, expires_delta=timedelta(minutes=15))
+
+def verify_password_reset_token(token: str):
+    email = verify_access_token(token)
+    if not email:
+        raise HTTPException(status_code=400, detail="Invalid or expired token")
+    return email

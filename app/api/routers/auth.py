@@ -6,7 +6,8 @@ from fastapi.security import OAuth2PasswordRequestForm
 
 from app.api.schemas import UserCreate, UserResponse, Token
 from app.services.user_service import UserService
-from app.utils.jwt import verify_email_verification_token
+from app.utils.jwt import verify_email_verification_token, verify_password_reset_token, create_password_reset_token
+from app.utils.mail import send_reset_email
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
@@ -81,3 +82,26 @@ async def resend_verification_email(
 
     await user_service.resend_verification_email(user, background_tasks)
     return {"message": "Verification email sent successfully"}
+
+@router.post("/request-password-reset")
+async def request_password_reset(email: str, background_tasks: BackgroundTasks, user_service: UserService = Depends()):
+    user = user_service.get_user_by_email(email)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    reset_token = create_password_reset_token(user.email)
+    await send_reset_email(user.email, reset_token, background_tasks)
+    return {"message": "Password reset email sent."}
+
+@router.post("/reset-password")
+def reset_password(token: str, new_password: str, user_service: UserService = Depends()):
+    email = verify_password_reset_token(token)
+    if not email:
+        raise HTTPException(status_code=400, detail="Invalid or expired token")
+
+    user = user_service.get_user_by_email(email)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    user_service.update_password(user, new_password)
+    return {"message": "Password reset successfully"}

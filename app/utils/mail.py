@@ -42,3 +42,15 @@ async def send_verification_email(email: EmailStr, token: str, background_tasks:
     fm = FastMail(conf)
     print(f"Sending email to {email} with token {token}")
     background_tasks.add_task(fm.send_message, message, template_name="verification_email.html")
+
+
+async def send_reset_email(email: EmailStr, token: str, background_tasks: BackgroundTasks):
+    link = f"{Config.APP_BASE_URL}/auth/reset-password?token={token}"
+    message = MessageSchema(
+        subject="Password Reset Request",
+        recipients=[email],
+        template_body={"reset_link": link},
+        subtype="html",
+    )
+    fm = FastMail(conf)
+    background_tasks.add_task(fm.send_message, message, template_name="reset_password_email.html")

@@ -97,3 +97,11 @@ class UserService:
         self.db.commit()
         self.db.refresh(user)
         return user
+
+
+    def update_password(self, user: User, password: str) -> User:
+        """Update the user's password."""
+        user.hashed_password = pwd_context.hash(password)
+        self.db.commit()
+        self.db.refresh(user)
+        return user
